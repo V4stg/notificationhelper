@@ -1,4 +1,4 @@
-package com.codecool.notificationhelper;
+package com.codecool.notificationhelper.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
