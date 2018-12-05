@@ -1,5 +1,7 @@
 package com.codecool.notificationhelper.controller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -10,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-public class UserAPI {
+public class UserController {
 
     /**
      * Validates, if user already exists, google account is already linked to a user.
@@ -24,22 +26,19 @@ public class UserAPI {
         // TODO -> if user exists in database, return message about unsuccessful attempt.
         // TODO -> else insert user data into database, and log in.
 
-        return new HashMap<>();
+        HashMap<String, Object> response = new HashMap<>();
+        return response;
     }
 
     /**
      * Sends only the necessary user information.
      *
-     * @param payload
      * @return
-     * @throws Exception
      */
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public Map<String, Object> getUser(@RequestBody Map<String, Object> payload) throws Exception {
+    public Principal getUser(Principal principal, ModelMap modelMap) {
         // TODO -> if user exists in database, log in.
-        // TODO -> else return message about unsuccessful attempt.
-
-        return new HashMap<>();
+        return principal;
     }
 
     /**

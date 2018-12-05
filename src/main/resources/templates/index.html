@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Insert title here</title>
 </head>
 <body>
     <a href = "user">Click here to Google Login</a>
+    <p th:if="${name}" th:text="${name}"></p>
+    <p th:if="${email}" th:text="${email}"></p>
+    <img th:if="${img}" th:src="${img}">
 </body>
 </html>
