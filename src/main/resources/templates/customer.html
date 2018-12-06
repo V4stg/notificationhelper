@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Notification Helper</title>
+</head>
+<body>
+    <h1><a href="/">Notification Helper</a></h1>
+
+    <p><a href="/user" th:text="${name}"></a></p>
+
+    <img th:if="${picture}" th:src="${picture}" width="200">
+    <p th:if="${email}" th:text="${email}"></p>
+    <p th:if="${googleId}" th:text="${googleId}"></p>
+</body>
+</html>

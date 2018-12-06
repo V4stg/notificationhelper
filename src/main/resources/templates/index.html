@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Insert title here</title>
+    <title>Notification Helper</title>
 </head>
 <body>
-    <a href = "/login">Click here to Google Login</a>
+    <h1><a href="/">Notification Helper</a></h1>
 
-    <form th:if="${email}" action="/users" method="post">
+    <th:block>
+        <a th:if="!${email}" href = "/login">Click here to Google Login</a>
+        <br>
+    </th:block>
+
+    <form th:if="${email} and ${customerId} != null" action="/users" method="post">
         <input type="submit" value="Click here to Sign Up">
     </form>
 
-    <p th:if="${name}" th:text="${name}"></p>
-    <p th:if="${email}" th:text="${email}"></p>
-    <img th:if="${img}" th:src="${img}">
+    <p th:if="${name}"><a href="/user" th:text="${name}"></a></p>
+
 </body>
 </html>

@@ -5,12 +5,11 @@ import com.codecool.notificationhelper.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class UserController {
@@ -18,20 +17,15 @@ public class UserController {
     @Autowired
     private CustomerRepository customerRepository;
 
-    /**
-     * Validates, if user already exists, google account is already linked to a user.
-     *
-     * @return
-     */
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     public String createUser(OAuth2Authentication authentication) {
-        // TODO -> if user exists in database, return message about unsuccessful attempt.
-        // TODO -> else insert user data into database, and log in.
 
         if (authentication != null) {
-            HashMap<String, Object> properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+            HashMap<String, Object> properties;
+            properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
 
             String googleId = (String) properties.get("id");
+            String name = (String) properties.get("name");
             String email = (String) properties.get("email");
 
             Customer customer = customerRepository.findByGoogleId(googleId);
@@ -44,33 +38,26 @@ public class UserController {
         return "redirect:/index";
     }
 
-    /**
-     * Edits user information, preferences, if allowed.
-     *
-     * @param payload
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping(value = "/user", method = RequestMethod.PUT)
-    public Map<String, Object> editUser(@RequestBody Map<String, Object> payload) throws Exception {
-        // TODO -> if allowed, edit user data, and return message about success.
-        // TODO -> else return message about unsuccessful attempt.
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public String getUser(OAuth2Authentication authentication, ModelMap modelMap) {
 
-        return new HashMap<>();
-    }
+        if (authentication != null) {
+            HashMap<String, Object> properties;
+            properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
 
-    /**
-     * Delete user account.
-     *
-     * @param payload
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping(value = "/user", method = RequestMethod.DELETE)
-    public Map<String, Object> deleteUser(@RequestBody Map<String, Object> payload) throws Exception {
-        // TODO -> if allowed, delete user data, and return message about success
-        // TODO -> else return message about unsuccessful attempt.
+            String googleId = (String) properties.get("googleId");
+            String name = (String) properties.get("name");
+            String email = (String) properties.get("email");
+            String picture = (String) properties.get("picture");
 
-        return new HashMap<>();
+            modelMap.addAttribute("googleId", googleId);
+            modelMap.addAttribute("name", name);
+            modelMap.addAttribute("email", email);
+            modelMap.addAttribute("picture", picture);
+
+            return "customer";
+        }
+
+        return "redirect:/index";
     }
 }

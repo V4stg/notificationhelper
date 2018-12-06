@@ -19,4 +19,28 @@ public class Customer {
         this.googleId = googleId;
         this.email = email;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }
