@@ -5,6 +5,11 @@
 </head>
 <body>
     <a href = "/login">Click here to Google Login</a>
+
+    <form th:if="${email}" action="/users" method="post">
+        <input type="submit" value="Click here to Sign Up">
+    </form>
+
     <p th:if="${name}" th:text="${name}"></p>
     <p th:if="${email}" th:text="${email}"></p>
     <img th:if="${img}" th:src="${img}">
