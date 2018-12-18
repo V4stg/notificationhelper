@@ -1,6 +1,7 @@
 package com.codecool.notificationhelper.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Customer {
@@ -11,6 +12,13 @@ public class Customer {
 
     private String googleId;
     private String email;
+
+    @OneToMany(
+            mappedBy = "customer",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Item> items;
 
     public Customer() {
     }

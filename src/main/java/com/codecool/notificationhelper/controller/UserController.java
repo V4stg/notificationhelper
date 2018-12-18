@@ -2,6 +2,7 @@ package com.codecool.notificationhelper.controller;
 
 import com.codecool.notificationhelper.model.Customer;
 import com.codecool.notificationhelper.repository.CustomerRepository;
+import com.codecool.notificationhelper.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,9 @@ public class UserController {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     public String createUser(OAuth2Authentication authentication) {
