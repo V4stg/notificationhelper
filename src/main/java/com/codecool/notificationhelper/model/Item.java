@@ -23,6 +23,9 @@ public class Item {
 
     private boolean sendEmail;
 
+    public Item() {
+    }
+
     public Item(Customer customer, String name, Date expiryDate) {
         this.customer = customer;
         this.name = name;

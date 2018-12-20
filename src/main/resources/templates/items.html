@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Notification Helper</title>
+</head>
+<body>
+
+<h1><a href="/">Notification Helper</a></h1>
+
+<h2>Item list</h2>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Expiry Date</th>
+        <th>Send Email</th>
+    </tr>
+    <tr th:each="item : ${items}">
+        <td th:text="${item.getName()}">Name</td>
+        <td th:text="${item.getDescription()}">Description</td>
+        <td th:text="${item.getExpiryDate()}">Expiry Date</td>
+        <td th:text="${item.isSendEmail()} ? 'yes' : 'no' ">yes</td>
+    </tr>
+</table>
+
+</body>
+</html>
