@@ -22,15 +22,16 @@ public class UserController {
     private ItemRepository itemRepository;
 
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public String createUser(OAuth2Authentication authentication) {
+    public String createUser(OAuth2Authentication authentication, ModelMap modelMap) {
 
         if (authentication != null) {
             HashMap<String, Object> properties;
             properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
 
             String googleId = (String) properties.get("id");
-            String name = (String) properties.get("name");
             String email = (String) properties.get("email");
+
+            modelMap.addAttribute("properties", properties);
 
             Customer customer = customerRepository.findByGoogleId(googleId);
 
@@ -49,15 +50,7 @@ public class UserController {
             HashMap<String, Object> properties;
             properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
 
-            String googleId = (String) properties.get("googleId");
-            String name = (String) properties.get("name");
-            String email = (String) properties.get("email");
-            String picture = (String) properties.get("picture");
-
-            modelMap.addAttribute("googleId", googleId);
-            modelMap.addAttribute("name", name);
-            modelMap.addAttribute("email", email);
-            modelMap.addAttribute("picture", picture);
+            modelMap.addAttribute("properties", properties);
 
             return "customer";
         }

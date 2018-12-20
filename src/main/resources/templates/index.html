@@ -7,15 +7,15 @@
     <h1><a href="/">Notification Helper</a></h1>
 
     <th:block>
-        <a th:if="!${email}" href = "/login">Click here to Google Login</a>
+        <a th:if="!${properties.get('email')}" href = "/login">Click here to Google Login</a>
         <br>
     </th:block>
 
-    <form th:if="${email} and ${customerId} != null" action="/users" method="post">
+    <form th:if="${properties.get('email')} and ${customerId} == null" action="/users" method="post">
         <input type="submit" value="Click here to Sign Up">
     </form>
 
-    <p th:if="${name}"><a href="/user" th:text="${name}"></a></p>
+    <p th:if="${properties.get('name')}"><a href="/user" th:text="${properties.get('name')}"></a></p>
 
 </body>
 </html>

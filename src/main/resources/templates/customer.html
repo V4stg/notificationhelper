@@ -6,10 +6,10 @@
 <body>
     <h1><a href="/">Notification Helper</a></h1>
 
-    <p><a href="/user" th:text="${name}"></a></p>
+    <p><a href="/user" th:text="${properties.get('name')}"></a></p>
 
-    <img th:if="${picture}" th:src="${picture}" width="200">
-    <p th:if="${email}" th:text="${email}"></p>
-    <p th:if="${googleId}" th:text="${googleId}"></p>
+    <img th:if="${properties.get('picture')}" th:src="${properties.get('picture')}" width="200">
+    <p th:if="${properties.get('email')}" th:text="${properties.get('email')}"></p>
+    <p th:if="${properties.get('id')}" th:text="${properties.get('id')}"></p>
 </body>
 </html>

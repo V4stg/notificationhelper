@@ -23,14 +23,13 @@ public class IndexController {
 
         if (authentication != null) {
             HashMap<String, Object> properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
-            String googleId = (String) properties.get("googleId");
-            modelMap.addAttribute("name", properties.get("name"));
-            modelMap.addAttribute("email", properties.get("email"));
-            modelMap.addAttribute("picture", properties.get("picture"));
-            modelMap.addAttribute("properties", properties.toString());
 
+            String googleId = (String) properties.get("id");
+
+            modelMap.addAttribute("properties", properties);
 
             Customer customer = customerRepository.findByGoogleId(googleId);
+
             if (customer != null) {
                 int customerId = customer.getId();
                 modelMap.addAttribute("customerId", customerId);
