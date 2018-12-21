@@ -20,17 +20,19 @@ public class IndexController {
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String mainPage(OAuth2Authentication authentication, ModelMap modelMap) {
 
-        HashMap<String, Object> properties;
-        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        if (authentication != null) {
+            HashMap<String, Object> properties;
+            properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
 
-        String googleId = (String) properties.get("id");
-        Customer customer = customerRepository.findByGoogleId(googleId);
+            String googleId = (String) properties.get("id");
+            Customer customer = customerRepository.findByGoogleId(googleId);
 
-        modelMap.addAttribute("properties", properties);
+            modelMap.addAttribute("properties", properties);
 
-        if (customer != null) {
-            int customerId = customer.getId();
-            modelMap.addAttribute("customerId", customerId);
+            if (customer != null) {
+                long customerId = customer.getId();
+                modelMap.addAttribute("customerId", customerId);
+            }
         }
 
         return "index";
