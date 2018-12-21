@@ -24,20 +24,18 @@ public class UserController {
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     public String createUser(OAuth2Authentication authentication, ModelMap modelMap) {
 
-        if (authentication != null) {
-            HashMap<String, Object> properties;
-            properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        HashMap<String, Object> properties;
+        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
 
-            String googleId = (String) properties.get("id");
-            String email = (String) properties.get("email");
+        String googleId = (String) properties.get("id");
+        String email = (String) properties.get("email");
 
-            modelMap.addAttribute("properties", properties);
+        modelMap.addAttribute("properties", properties);
 
-            Customer customer = customerRepository.findByGoogleId(googleId);
+        Customer customer = customerRepository.findByGoogleId(googleId);
 
-            if (customer == null) {
-                customerRepository.save(new Customer(googleId, email));
-            }
+        if (customer == null) {
+            customerRepository.save(new Customer(googleId, email));
         }
 
         return "redirect:/index";
@@ -46,12 +44,14 @@ public class UserController {
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public String getUser(OAuth2Authentication authentication, ModelMap modelMap) {
 
-        if (authentication != null) {
-            HashMap<String, Object> properties;
-            properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        HashMap<String, Object> properties;
+        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
 
+        String googleId = (String) properties.get("id");
+        Customer customer = customerRepository.findByGoogleId(googleId);
+
+        if (customer != null) {
             modelMap.addAttribute("properties", properties);
-
             return "customer";
         }
 

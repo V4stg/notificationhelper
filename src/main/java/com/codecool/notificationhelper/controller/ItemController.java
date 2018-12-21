@@ -26,17 +26,16 @@ public class ItemController {
     @RequestMapping(value = "/items", method = RequestMethod.GET)
     public String getItems(OAuth2Authentication authentication, ModelMap modelMap) {
 
-        if (authentication != null) {
-            HashMap<String, Object> properties;
-            properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        HashMap<String, Object> properties;
+        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
 
-            String googleId = (String) properties.get("id");
+        String googleId = (String) properties.get("id");
+        Customer customer = customerRepository.findByGoogleId(googleId);
 
-            Customer customer = customerRepository.findByGoogleId(googleId);
+        if (customer != null) {
             List<Item> items = itemRepository.findAllByCustomerOrderByExpiryDateAsc(customer);
 
             modelMap.addAttribute("properties", properties);
-
             modelMap.addAttribute("items", items);
 
             return "items";

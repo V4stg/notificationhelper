@@ -19,21 +19,18 @@ public class IndexController {
 
     @RequestMapping(value = {"/", "/index"}, method = RequestMethod.GET)
     public String createUser(OAuth2Authentication authentication, ModelMap modelMap) {
-        // TODO -> if user exists in database, return message about unsuccessful attempt.
 
-        if (authentication != null) {
-            HashMap<String, Object> properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        HashMap<String, Object> properties;
+        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
 
-            String googleId = (String) properties.get("id");
+        String googleId = (String) properties.get("id");
+        Customer customer = customerRepository.findByGoogleId(googleId);
 
-            modelMap.addAttribute("properties", properties);
+        modelMap.addAttribute("properties", properties);
 
-            Customer customer = customerRepository.findByGoogleId(googleId);
-
-            if (customer != null) {
-                int customerId = customer.getId();
-                modelMap.addAttribute("customerId", customerId);
-            }
+        if (customer != null) {
+            int customerId = customer.getId();
+            modelMap.addAttribute("customerId", customerId);
         }
 
         return "index";
