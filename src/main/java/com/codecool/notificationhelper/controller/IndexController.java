@@ -17,8 +17,8 @@ public class IndexController {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @RequestMapping(value = {"/", "/index"}, method = RequestMethod.GET)
-    public String createUser(OAuth2Authentication authentication, ModelMap modelMap) {
+    @RequestMapping(value = {"/"}, method = RequestMethod.GET)
+    public String mainPage(OAuth2Authentication authentication, ModelMap modelMap) {
 
         HashMap<String, Object> properties;
         properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
@@ -34,5 +34,10 @@ public class IndexController {
         }
 
         return "index";
+    }
+
+    @RequestMapping(value = {"/index"}, method = RequestMethod.GET)
+    public String indexRedirect() {
+        return "redirect:/";
     }
 }

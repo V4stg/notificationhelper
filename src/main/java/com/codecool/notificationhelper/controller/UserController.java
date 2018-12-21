@@ -38,7 +38,7 @@ public class UserController {
             customerRepository.save(new Customer(googleId, email));
         }
 
-        return "redirect:/index";
+        return "redirect:/";
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
@@ -55,6 +55,6 @@ public class UserController {
             return "customer";
         }
 
-        return "redirect:/index";
+        return "redirect:/";
     }
 }

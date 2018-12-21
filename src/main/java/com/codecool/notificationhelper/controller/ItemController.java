@@ -41,7 +41,7 @@ public class ItemController {
             return "items";
         }
 
-        return "redirect:/index";
+        return "redirect:/";
     }
 
 }
