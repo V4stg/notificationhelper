@@ -16,12 +16,16 @@
         <th>Expiry Date</th>
         <th>Send Email</th>
         <th></th>
+        <th></th>
     </tr>
     <tr>
         <td th:text="${item.getName()}">Name</td>
         <td th:text="${item.getDescription()}">Description</td>
         <td th:text="${item.getExpiryDate()}">Expiry Date</td>
         <td th:text="${item.isSendEmail()} ? 'yes' : 'no' ">yes</td>
+        <td>
+            <a th:href="@{/item/{id}/edit(id=${item.getId()})}">Edit</a>
+        </td>
         <td>
             <a th:href="@{/item/{id}/delete(id=${item.getId()})}">Delete</a>
         </td>
