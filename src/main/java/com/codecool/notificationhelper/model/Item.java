@@ -1,7 +1,5 @@
 package com.codecool.notificationhelper.model;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;

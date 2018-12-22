@@ -2,7 +2,6 @@ package com.codecool.notificationhelper.controller;
 
 import com.codecool.notificationhelper.model.Customer;
 import com.codecool.notificationhelper.repository.CustomerRepository;
-import com.codecool.notificationhelper.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
@@ -15,17 +14,19 @@ import java.util.HashMap;
 @Controller
 public class UserController {
 
-    @Autowired
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
     @Autowired
-    private ItemRepository itemRepository;
+    public UserController(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     public String createUser(OAuth2Authentication authentication, ModelMap modelMap) {
 
-        HashMap<String, Object> properties;
-        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        Object authDetails = authentication.getUserAuthentication().getDetails();
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> properties = (HashMap<String, Object>) authDetails;
 
         String googleId = (String) properties.get("id");
         String email = (String) properties.get("email");
@@ -44,17 +45,16 @@ public class UserController {
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public String getUser(OAuth2Authentication authentication, ModelMap modelMap) {
 
-        HashMap<String, Object> properties;
-        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        Object authDetails = authentication.getUserAuthentication().getDetails();
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> properties = (HashMap<String, Object>) authDetails;
 
         String googleId = (String) properties.get("id");
         Customer customer = customerRepository.findByGoogleId(googleId);
 
-        if (customer != null) {
-            modelMap.addAttribute("properties", properties);
-            return "customer";
-        }
+        if (customer == null) return "redirect:/";
 
-        return "redirect:/";
+        modelMap.addAttribute("properties", properties);
+        return "customer";
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -18,46 +17,48 @@ import java.util.UUID;
 @Controller
 public class ItemController {
 
-    @Autowired
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
+
+    private final ItemRepository itemRepository;
 
     @Autowired
-    private ItemRepository itemRepository;
+    public ItemController(CustomerRepository customerRepository, ItemRepository itemRepository) {
+        this.customerRepository = customerRepository;
+        this.itemRepository = itemRepository;
+    }
 
     @RequestMapping(value = "/items", method = RequestMethod.GET)
     public String getItems(OAuth2Authentication authentication, ModelMap modelMap) {
 
-        HashMap<String, Object> properties;
-        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        Object authDetails = authentication.getUserAuthentication().getDetails();
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> properties = (HashMap<String, Object>) authDetails;
 
         String googleId = (String) properties.get("id");
         Customer customer = customerRepository.findByGoogleId(googleId);
 
-        if (customer != null) {
-            List<Item> items = itemRepository.findAllByCustomerOrderByExpiryDateAsc(customer);
+        if (customer == null) return "redirect:/";
 
-            modelMap.addAttribute("properties", properties);
-            modelMap.addAttribute("items", items);
+        List<Item> items = itemRepository.findAllByCustomerOrderByExpiryDateAsc(customer);
 
-            return "items";
-        }
+        modelMap.addAttribute("properties", properties);
+        modelMap.addAttribute("items", items);
 
-        return "redirect:/";
+        return "items";
     }
 
     @RequestMapping(value = "/item/{id}", method = RequestMethod.GET)
     public String getItem(OAuth2Authentication authentication, ModelMap modelMap,
                             @PathVariable("id") UUID itemId) {
 
-        HashMap<String, Object> properties;
-        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        Object authDetails = authentication.getUserAuthentication().getDetails();
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> properties = (HashMap<String, Object>) authDetails;
 
         String googleId = (String) properties.get("id");
         Customer customer = customerRepository.findByGoogleId(googleId);
 
-        if (customer == null) {
-            return "redirect:/";
-        }
+        if (customer == null) return "redirect:/";
 
         Item item = itemRepository.findByIdAndAndCustomer(itemId, customer);
         if (item == null) {
@@ -73,15 +74,14 @@ public class ItemController {
     @RequestMapping(value = "/newitem", method = RequestMethod.GET)
     public String newItem(OAuth2Authentication authentication, ModelMap modelMap) {
 
-        HashMap<String, Object> properties;
-        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        Object authDetails = authentication.getUserAuthentication().getDetails();
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> properties = (HashMap<String, Object>) authDetails;
 
         String googleId = (String) properties.get("id");
         Customer customer = customerRepository.findByGoogleId(googleId);
 
-        if (customer == null) {
-            return "redirect:/";
-        }
+        if (customer == null) return "redirect:/";
 
         modelMap.addAttribute("properties", properties);
 
@@ -94,17 +94,16 @@ public class ItemController {
                              @RequestParam("newItemDescription") String newItemDescription,
                              @RequestParam(value = "newItemSendEmail", required = false) String newItemSendEmail) {
 
-        HashMap<String, Object> properties;
-        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        Object authDetails = authentication.getUserAuthentication().getDetails();
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> properties = (HashMap<String, Object>) authDetails;
 
         String googleId = (String) properties.get("id");
         Customer customer = customerRepository.findByGoogleId(googleId);
 
-        if (customer == null) {
-            return "redirect:/";
-        }
+        if (customer == null) return "redirect:/";
 
-        if (newItemName != "") {
+        if (!newItemName.equals("")) {
             Item newItem = new Item(customer, newItemName, newItemDescription, newItemSendEmail != null);
             itemRepository.save(newItem);
             return "redirect:/item/" + newItem.getId();
@@ -117,15 +116,14 @@ public class ItemController {
     public String deleteItem(OAuth2Authentication authentication,
                              @PathVariable("id") UUID itemId) {
 
-        HashMap<String, Object> properties;
-        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        Object authDetails = authentication.getUserAuthentication().getDetails();
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> properties = (HashMap<String, Object>) authDetails;
 
         String googleId = (String) properties.get("id");
         Customer customer = customerRepository.findByGoogleId(googleId);
 
-        if (customer == null) {
-            return "redirect:/";
-        }
+        if (customer == null) return "redirect:/";
 
         Item item = itemRepository.findByIdAndAndCustomer(itemId, customer);
 
@@ -140,15 +138,14 @@ public class ItemController {
     public String editItemPage(OAuth2Authentication authentication, ModelMap modelMap,
                              @PathVariable("id") UUID itemId) {
 
-        HashMap<String, Object> properties;
-        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        Object authDetails = authentication.getUserAuthentication().getDetails();
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> properties = (HashMap<String, Object>) authDetails;
 
         String googleId = (String) properties.get("id");
         Customer customer = customerRepository.findByGoogleId(googleId);
 
-        if (customer == null) {
-            return "redirect:/";
-        }
+        if (customer == null) return "redirect:/";
 
         Item item = itemRepository.findByIdAndAndCustomer(itemId, customer);
 
@@ -169,15 +166,14 @@ public class ItemController {
                              @RequestParam("newItemDescription") String newItemDescription,
                              @RequestParam(value = "newItemSendEmail", required = false) String newItemSendEmail) {
 
-        HashMap<String, Object> properties;
-        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        Object authDetails = authentication.getUserAuthentication().getDetails();
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> properties = (HashMap<String, Object>) authDetails;
 
         String googleId = (String) properties.get("id");
         Customer customer = customerRepository.findByGoogleId(googleId);
 
-        if (customer == null) {
-            return "redirect:/";
-        }
+        if (customer == null) return "redirect:/";
 
         Item item = itemRepository.findByIdAndAndCustomer(itemId, customer);
 
@@ -188,7 +184,8 @@ public class ItemController {
             itemRepository.save(item);
         }
 
-        return "redirect:/item/" + item.getId();
+        if (item != null) return "redirect:/item/" + item.getId();
+        else return "redirect:/items";
     }
 
 }

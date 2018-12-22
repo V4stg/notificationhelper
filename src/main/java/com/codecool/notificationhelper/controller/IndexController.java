@@ -15,15 +15,20 @@ import java.util.UUID;
 @Controller
 public class IndexController {
 
+    private final CustomerRepository customerRepository;
+
     @Autowired
-    private CustomerRepository customerRepository;
+    public IndexController(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String mainPage(OAuth2Authentication authentication, ModelMap modelMap) {
 
         if (authentication != null) {
-            HashMap<String, Object> properties;
-            properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+            Object authDetails = authentication.getUserAuthentication().getDetails();
+            @SuppressWarnings("unchecked")
+            HashMap<String, Object> properties = (HashMap<String, Object>) authDetails;
 
             String googleId = (String) properties.get("id");
             Customer customer = customerRepository.findByGoogleId(googleId);
