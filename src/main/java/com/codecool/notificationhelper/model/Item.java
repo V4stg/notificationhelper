@@ -1,14 +1,17 @@
 package com.codecool.notificationhelper.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 public class Item {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private long id;
+    @GeneratedValue
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -26,10 +29,19 @@ public class Item {
     public Item() {
     }
 
+    public Item(Customer customer, String name) {
+        this.customer = customer;
+        this.name = name;
+    }
+
     public Item(Customer customer, String name, Date expiryDate) {
         this.customer = customer;
         this.name = name;
         this.expiryDate = expiryDate;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public String getName() {

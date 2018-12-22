@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 @Controller
 public class IndexController {
@@ -30,7 +31,7 @@ public class IndexController {
             modelMap.addAttribute("properties", properties);
 
             if (customer != null) {
-                long customerId = customer.getId();
+                UUID customerId = customer.getId();
                 modelMap.addAttribute("customerId", customerId);
             }
         }

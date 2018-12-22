@@ -1,14 +1,17 @@
 package com.codecool.notificationhelper.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private long id;
+    @GeneratedValue
+    private UUID id;
 
     private String googleId;
     private String email;
@@ -28,11 +31,11 @@ public class Customer {
         this.email = email;
     }
 
-    public long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

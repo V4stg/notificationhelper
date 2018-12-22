@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class ItemController {
@@ -47,7 +47,7 @@ public class ItemController {
 
     @RequestMapping(value = "/item/{id}", method = RequestMethod.GET)
     public String getItem(OAuth2Authentication authentication, ModelMap modelMap,
-                          @PathVariable("id") long itemId) {
+                          @PathVariable("id") UUID itemId) {
 
         HashMap<String, Object> properties;
         properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
@@ -68,6 +68,43 @@ public class ItemController {
         modelMap.addAttribute("item", item);
 
         return "item_details";
+    }
+
+    @RequestMapping(value = "/newitem", method = RequestMethod.GET)
+    public String newItem(OAuth2Authentication authentication, ModelMap modelMap) {
+
+        HashMap<String, Object> properties;
+        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+
+        String googleId = (String) properties.get("id");
+        Customer customer = customerRepository.findByGoogleId(googleId);
+
+        if (customer == null) {
+            return "redirect:/";
+        }
+
+        modelMap.addAttribute("properties", properties);
+
+        return "item_form";
+    }
+
+    @RequestMapping(value = "/item", method = RequestMethod.POST)
+    public String createItem(OAuth2Authentication authentication, ModelMap modelMap,
+                             @RequestParam("newItemName") String newItemName) {
+
+        HashMap<String, Object> properties;
+        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+
+        String googleId = (String) properties.get("id");
+        Customer customer = customerRepository.findByGoogleId(googleId);
+
+        if (customer == null) {
+            return "redirect:/";
+        }
+
+        Item item = itemRepository.save(new Item(customer, newItemName));
+
+        return "redirect:/item/" + item.getId();
     }
 
 }
