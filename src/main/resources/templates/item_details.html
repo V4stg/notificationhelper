@@ -7,7 +7,7 @@
 
 <h1><a href="/">Notification Helper</a></h1>
 
-<h2>Item details</h2>
+<h2><a th:href="@{/item/{id}(id=${item.getId()})}">Item details</a></h2>
 
 <table>
     <tr>
@@ -31,6 +31,8 @@
         </td>
     </tr>
 </table>
+
+<p><a href="/items">Back to Item list</a></p>
 
 </body>
 </html>

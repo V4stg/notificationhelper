@@ -40,6 +40,13 @@ public class Item {
         this.expiryDate = expiryDate;
     }
 
+    public Item(Customer customer, String name, String description, boolean sendEmail) {
+        this.customer = customer;
+        this.name = name;
+        this.description = description;
+        this.sendEmail = sendEmail;
+    }
+
     public UUID getId() {
         return id;
     }

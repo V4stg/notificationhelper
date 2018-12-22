@@ -47,7 +47,7 @@ public class ItemController {
 
     @RequestMapping(value = "/item/{id}", method = RequestMethod.GET)
     public String getItem(OAuth2Authentication authentication, ModelMap modelMap,
-                          @PathVariable("id") UUID itemId) {
+                            @PathVariable("id") UUID itemId) {
 
         HashMap<String, Object> properties;
         properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
@@ -90,7 +90,9 @@ public class ItemController {
 
     @RequestMapping(value = "/item", method = RequestMethod.POST)
     public String createItem(OAuth2Authentication authentication,
-                             @RequestParam("newItemName") String newItemName) {
+                             @RequestParam("newItemName") String newItemName,
+                             @RequestParam("newItemDescription") String newItemDescription,
+                             @RequestParam(value = "newItemSendEmail", required = false) String newItemSendEmail) {
 
         HashMap<String, Object> properties;
         properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
@@ -102,9 +104,13 @@ public class ItemController {
             return "redirect:/";
         }
 
-        Item item = itemRepository.save(new Item(customer, newItemName));
+        if (newItemName != "") {
+            Item newItem = new Item(customer, newItemName, newItemDescription, newItemSendEmail != null);
+            itemRepository.save(newItem);
+            return "redirect:/item/" + newItem.getId();
+        }
 
-        return "redirect:/item/" + item.getId();
+        return "redirect:/items";
     }
 
     @RequestMapping(value = "/item/{id}/delete", method = RequestMethod.GET)
@@ -158,8 +164,10 @@ public class ItemController {
 
     @RequestMapping(value = "/item/{id}/edit", method = RequestMethod.POST)
     public String updateItem(OAuth2Authentication authentication,
-                           @PathVariable("id") UUID itemId,
-                           @RequestParam("newItemName") String newItemName) {
+                             @PathVariable("id") UUID itemId,
+                             @RequestParam("newItemName") String newItemName,
+                             @RequestParam("newItemDescription") String newItemDescription,
+                             @RequestParam(value = "newItemSendEmail", required = false) String newItemSendEmail) {
 
         HashMap<String, Object> properties;
         properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
@@ -173,8 +181,10 @@ public class ItemController {
 
         Item item = itemRepository.findByIdAndAndCustomer(itemId, customer);
 
-        if (item != null) {
+        if (item != null && !newItemName.equals("")) {
             item.setName(newItemName);
+            item.setDescription(newItemDescription);
+            item.setSendEmail(newItemSendEmail != null);
             itemRepository.save(item);
         }
 
