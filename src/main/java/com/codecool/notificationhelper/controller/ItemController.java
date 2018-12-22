@@ -89,7 +89,7 @@ public class ItemController {
     }
 
     @RequestMapping(value = "/item", method = RequestMethod.POST)
-    public String createItem(OAuth2Authentication authentication, ModelMap modelMap,
+    public String createItem(OAuth2Authentication authentication,
                              @RequestParam("newItemName") String newItemName) {
 
         HashMap<String, Object> properties;
@@ -105,6 +105,29 @@ public class ItemController {
         Item item = itemRepository.save(new Item(customer, newItemName));
 
         return "redirect:/item/" + item.getId();
+    }
+
+    @RequestMapping(value = "/item/{id}/delete", method = RequestMethod.GET)
+    public String deleteItem(OAuth2Authentication authentication,
+                          @PathVariable("id") UUID itemId) {
+
+        HashMap<String, Object> properties;
+        properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+
+        String googleId = (String) properties.get("id");
+        Customer customer = customerRepository.findByGoogleId(googleId);
+
+        if (customer == null) {
+            return "redirect:/";
+        }
+
+        Item item = itemRepository.findByIdAndAndCustomer(itemId, customer);
+
+        if (item != null) {
+            itemRepository.delete(item);
+        }
+
+        return "redirect:/items";
     }
 
 }
