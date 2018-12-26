@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Notification Helper</title>
+    <div th:replace="header.html :: copy"></div>
 </head>
 <body>
-    <h1><a href="/">Notification Helper</a></h1>
 
-    <h2><a href="/items">Items</a></h2>
+    <div th:replace="navbar.html :: copy"></div>
 
-    <a th:if="!${properties}" href = "/login">Click here to Google Login</a>
-    <br>
+    <div class="container">
+        <h2><a href="/items">Items</a></h2>
 
-    <th:block th:if="${properties} != null">
+        <a th:if="!${properties}" href = "/login">Click here to Google Login</a>
+        <br>
 
-        <form th:if="${properties.get('email')} and ${customerId} == null" action="/users" method="post">
-            <input type="submit" value="Click here to Sign Up">
-        </form>
+        <th:block th:if="${properties} != null">
 
-        <p th:if="${properties.get('name')}"><a href="/user" th:text="${properties.get('name')}"></a></p>
-    </th:block>
+            <form th:if="${properties.get('email')} and ${customerId} == null" action="/users" method="post">
+                <input type="submit" value="Click here to Sign Up">
+            </form>
+
+            <p th:if="${properties.get('name')}"><a href="/user" th:text="${properties.get('name')}"></a></p>
+        </th:block>
+    </div>
 
 </body>
 </html>
