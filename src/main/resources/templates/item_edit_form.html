@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Notification Helper</title>
+</head>
+<body>
+
+<h1><a href="/">Notification Helper</a></h1>
+
+<h2>Edit item</h2>
+
+<form th:action="@{/item/{id}/edit(id=${item.getId()})}" method="post">
+    <p><label>Name:
+            <input type="text" name="newItemName" th:value="${item.getName()}"/>
+    </label></p>
+    <p><label>Description:
+        <textarea name="newItemDescription" id="description" cols="30" rows="10" th:utext="${item.getDescription()}"></textarea>
+    </label></p>
+    <p><label>Send Email:
+        <input type="checkbox" name="newItemSendEmail" value="true" th:checked="${item.isSendEmail()}">
+    </label></p>
+
+    <p><input type="submit" value="Submit" /></p>
+</form>
+
+<p><a th:href="@{/item/{id}(id=${item.getId()})}">Back to Item details</a></p>
+<p><a href="/items">Back to Item list</a></p>
+
+</body>
+</html>

@@ -14,50 +14,47 @@ import java.util.HashMap;
 @Controller
 public class UserController {
 
+    private final CustomerRepository customerRepository;
+
     @Autowired
-    private CustomerRepository customerRepository;
+    public UserController(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public String createUser(OAuth2Authentication authentication) {
+    public String createUser(OAuth2Authentication authentication, ModelMap modelMap) {
 
-        if (authentication != null) {
-            HashMap<String, Object> properties;
-            properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        Object authDetails = authentication.getUserAuthentication().getDetails();
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> properties = (HashMap<String, Object>) authDetails;
 
-            String googleId = (String) properties.get("id");
-            String name = (String) properties.get("name");
-            String email = (String) properties.get("email");
+        String googleId = (String) properties.get("id");
+        String email = (String) properties.get("email");
 
-            Customer customer = customerRepository.findByGoogleId(googleId);
+        modelMap.addAttribute("properties", properties);
 
-            if (customer == null) {
-                customerRepository.save(new Customer(googleId, email));
-            }
+        Customer customer = customerRepository.findByGoogleId(googleId);
+
+        if (customer == null) {
+            customerRepository.save(new Customer(googleId, email));
         }
 
-        return "redirect:/index";
+        return "redirect:/";
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public String getUser(OAuth2Authentication authentication, ModelMap modelMap) {
 
-        if (authentication != null) {
-            HashMap<String, Object> properties;
-            properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
+        Object authDetails = authentication.getUserAuthentication().getDetails();
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> properties = (HashMap<String, Object>) authDetails;
 
-            String googleId = (String) properties.get("googleId");
-            String name = (String) properties.get("name");
-            String email = (String) properties.get("email");
-            String picture = (String) properties.get("picture");
+        String googleId = (String) properties.get("id");
+        Customer customer = customerRepository.findByGoogleId(googleId);
 
-            modelMap.addAttribute("googleId", googleId);
-            modelMap.addAttribute("name", name);
-            modelMap.addAttribute("email", email);
-            modelMap.addAttribute("picture", picture);
+        if (customer == null) return "redirect:/";
 
-            return "customer";
-        }
-
-        return "redirect:/index";
+        modelMap.addAttribute("properties", properties);
+        return "customer";
     }
 }

@@ -10,33 +10,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 @Controller
 public class IndexController {
 
-    @Autowired
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
-    @RequestMapping(value = {"/", "/index"}, method = RequestMethod.GET)
-    public String createUser(OAuth2Authentication authentication, ModelMap modelMap) {
-        // TODO -> if user exists in database, return message about unsuccessful attempt.
+    @Autowired
+    public IndexController(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
+
+    @RequestMapping(value = {"/"}, method = RequestMethod.GET)
+    public String mainPage(OAuth2Authentication authentication, ModelMap modelMap) {
 
         if (authentication != null) {
-            HashMap<String, Object> properties = (HashMap<String, Object>) authentication.getUserAuthentication().getDetails();
-            String googleId = (String) properties.get("googleId");
-            modelMap.addAttribute("name", properties.get("name"));
-            modelMap.addAttribute("email", properties.get("email"));
-            modelMap.addAttribute("picture", properties.get("picture"));
-            modelMap.addAttribute("properties", properties.toString());
+            Object authDetails = authentication.getUserAuthentication().getDetails();
+            @SuppressWarnings("unchecked")
+            HashMap<String, Object> properties = (HashMap<String, Object>) authDetails;
 
-
+            String googleId = (String) properties.get("id");
             Customer customer = customerRepository.findByGoogleId(googleId);
+
+            modelMap.addAttribute("properties", properties);
+
             if (customer != null) {
-                int customerId = customer.getId();
+                UUID customerId = customer.getId();
                 modelMap.addAttribute("customerId", customerId);
             }
         }
 
         return "index";
+    }
+
+    @RequestMapping(value = {"/index"}, method = RequestMethod.GET)
+    public String indexRedirect() {
+        return "redirect:/";
     }
 }

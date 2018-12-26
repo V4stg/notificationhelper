@@ -6,16 +6,19 @@
 <body>
     <h1><a href="/">Notification Helper</a></h1>
 
-    <th:block>
-        <a th:if="!${email}" href = "/login">Click here to Google Login</a>
-        <br>
+    <h2><a href="/items">Items</a></h2>
+
+    <a th:if="!${properties}" href = "/login">Click here to Google Login</a>
+    <br>
+
+    <th:block th:if="${properties} != null">
+
+        <form th:if="${properties.get('email')} and ${customerId} == null" action="/users" method="post">
+            <input type="submit" value="Click here to Sign Up">
+        </form>
+
+        <p th:if="${properties.get('name')}"><a href="/user" th:text="${properties.get('name')}"></a></p>
     </th:block>
-
-    <form th:if="${email} and ${customerId} != null" action="/users" method="post">
-        <input type="submit" value="Click here to Sign Up">
-    </form>
-
-    <p th:if="${name}"><a href="/user" th:text="${name}"></a></p>
 
 </body>
 </html>

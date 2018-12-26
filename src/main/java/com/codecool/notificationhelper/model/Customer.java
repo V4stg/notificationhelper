@@ -1,16 +1,25 @@
 package com.codecool.notificationhelper.model;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private int id;
+    @GeneratedValue
+    private UUID id;
 
     private String googleId;
     private String email;
+
+    @OneToMany(
+            mappedBy = "customer",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Item> items;
 
     public Customer() {
     }
@@ -20,11 +29,11 @@ public class Customer {
         this.email = email;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
