@@ -9,6 +9,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ public class IndexController {
     }
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
-    public String mainPage(OAuth2Authentication authentication, ModelMap modelMap) {
+    public String mainPage(OAuth2Authentication authentication, ModelMap modelMap, Principal principal) {
 
         if (authentication != null) {
             Object authDetails = authentication.getUserAuthentication().getDetails();
@@ -34,6 +35,7 @@ public class IndexController {
             Customer customer = customerRepository.findByGoogleId(googleId);
 
             modelMap.addAttribute("properties", properties);
+            modelMap.addAttribute("principal", principal);
 
             if (customer != null) {
                 UUID customerId = customer.getId();

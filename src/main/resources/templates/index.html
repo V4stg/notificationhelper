@@ -10,9 +10,6 @@
     <div class="container">
         <h2><a href="/items">Items</a></h2>
 
-        <a th:if="!${properties}" href = "/login">Click here to Google Login</a>
-        <br>
-
         <th:block th:if="${properties} != null">
 
             <form th:if="${properties.get('email')} and ${customerId} == null" action="/users" method="post">
