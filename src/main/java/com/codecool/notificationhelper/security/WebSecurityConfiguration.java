@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableOAuth2Sso
@@ -23,7 +22,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .authenticated()
                     .and()
                 .logout()
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                     .invalidateHttpSession(true)
                     .clearAuthentication(true)
                     .logoutSuccessUrl("/")
@@ -31,7 +29,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .permitAll()
                     .and()
                 .csrf()
-//                    .ignoringAntMatchers("/login")
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
         ;
     }

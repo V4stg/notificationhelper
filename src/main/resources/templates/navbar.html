@@ -7,50 +7,84 @@
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">Notification Helper</a>
             </div>
-            <!--<ul class="nav navbar-nav">
-                <li class="active"><a href="/">Home</a></li>
+
+            <ul th:if="${properties} != null" class="nav navbar-nav">
+                <li><a href="/items">Items</a></li>
             </ul>
-            <form class="navbar-form navbar-left" action="/" method="GET">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search" name="searched_string">
-                </div>
-                <button type="submit" class="btn btn-default">Submit</button>
-            </form>-->
+
             <ul th:if="${properties} == null" class="nav navbar-nav navbar-right">
                 <li><a href="/login">Login</a></li>
             </ul>
-            <ul th:if="${properties} != null" class="nav navbar-nav navbar-right authenticated">
-                <li><span id="user" th:text="${properties.get('name')}"></span></li>
-            </ul>
-            <ul th:if="${properties} != null" class="nav navbar-nav navbar-right authenticated">
-                <li><form action="/logout" method="post">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                    <button type="submit" class="btn btn-default">Logout</button>
-                </form></li>
-            </ul>
+
             <ul th:if="${properties} != null" class="nav navbar-nav navbar-right">
-                <button type="button" class="btn btn-default" id="logoutButton">revoke-token</button>
+                <li><a href="#" id="logoutButton">Logout</a></li>
+            </ul>
+
+            <ul th:if="${properties} != null" class="nav navbar-nav navbar-right authenticated">
+                <li><a href="/user" id="user" th:text="${properties.get('name')}"></a></li>
             </ul>
         </div>
     </nav>
     <script type="text/javascript">
+
         document.getElementById('logoutButton').addEventListener('click', function () {
-            $.get('/customer',
-                function (resp) { // on success
-                    let tokenValue = resp.details.tokenValue;
-                    setTimeout(function () {
-                        $.get("https://accounts.google.com/o/oauth2/revoke?token=" + tokenValue)
-                            // function (googleResp){
-                            //     if (googleResp.status === 200) {
-                            //         setTimeout(function () {
-                            //             $.post("/logout");
-                            //         }, 200);
-                            //     }
-                            // });
-                    }, 200);
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    let cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        let cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            function logout() {
+                $.ajax({
+                    type: "POST",
+                    url: "/logout",
+                    data: {"_csrf": getCookie('XSRF-TOKEN')}
                 })
-                .fail(function () { // on failure
-                    alert("Request failed.");
+                    .done(function () {
+                        setTimeout(function () {
+                            window.location.replace("/");
+                        }, 500);
+                    });
+            }
+
+            $.get('/customer',
+                function (customerData) {
+
+                    let tokenValue = customerData.details.tokenValue;
+
+                    $.ajax({
+                        type: 'GET',
+                        contentType: "application/json",
+                        url: "https://accounts.google.com/o/oauth2/revoke?token=" + tokenValue,
+                        statusCode: {
+                            200: function (){
+                                console.log(customerData);
+
+                                setTimeout(function () {
+                                    logout();
+                                }, 500);
+                            },
+                            400: function () {
+                                logout();
+                            }
+                        },
+                        error : function (xhr, text, err) {
+                            alert(xhr.statusCode().status+" "+xhr.statusCode().statusText);
+                        }
+                    });
+                })
+                .fail(function () {
+                    alert("Failed to get user data from server.");
                 });
         });
     </script>
