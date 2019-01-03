@@ -21,6 +21,7 @@
                 <input type="checkbox" name="newItemSendEmail" value="true" th:checked="${item.isSendEmail()}">
             </label></p>
 
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <p><input type="submit" value="Submit" /></p>
         </form>
 
