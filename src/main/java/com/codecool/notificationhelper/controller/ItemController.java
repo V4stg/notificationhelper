@@ -112,17 +112,17 @@ public class ItemController {
 //            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH);
 //            LocalDate date = LocalDate.parse(string, formatter);
 
-            Date expiryDate;
+            Date expiryDate = null;
             try {
                 expiryDate = format.parse(expiryDateString);
 
-                Item newItem = new Item(customer, newItemName, newItemDescription, newItemSendEmail != null, expiryDate);
-                itemRepository.save(newItem);
-                return "redirect:/item/" + newItem.getId();
-
             } catch (ParseException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
+
+            Item newItem = new Item(customer, newItemName, newItemDescription, newItemSendEmail != null, expiryDate);
+            itemRepository.save(newItem);
+            return "redirect:/item/" + newItem.getId();
         }
 
         return "redirect:/items";
@@ -180,6 +180,7 @@ public class ItemController {
                              @PathVariable("id") UUID itemId,
                              @RequestParam("newItemName") String newItemName,
                              @RequestParam("newItemDescription") String newItemDescription,
+                             @RequestParam(value = "newItemExpiryDate") String expiryDateString,
                              @RequestParam(value = "newItemSendEmail", required = false) String newItemSendEmail) {
 
         Object authDetails = authentication.getUserAuthentication().getDetails();
@@ -194,9 +195,19 @@ public class ItemController {
         Item item = itemRepository.findByIdAndAndCustomer(itemId, customer);
 
         if (item != null && !newItemName.equals("")) {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+
+            Date expiryDate = null;
+            try {
+                expiryDate = format.parse(expiryDateString);
+            } catch (ParseException e) {
+//                e.printStackTrace();
+            }
+
             item.setName(newItemName);
             item.setDescription(newItemDescription);
             item.setSendEmail(newItemSendEmail != null);
+            item.setExpiryDate(expiryDate);
             itemRepository.save(item);
         }
 
