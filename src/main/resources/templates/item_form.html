@@ -17,6 +17,9 @@
             <p><label>Description:
                 <textarea name="newItemDescription" id="description" cols="30" rows="10"></textarea>
             </label></p>
+            <p><label>Expiry Date:
+                <input type="date" name="newItemExpiryDate" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+            </label></p>
             <p><label>Send Email:
                 <input type="checkbox" name="newItemSendEmail" value="true">
             </label></p>
